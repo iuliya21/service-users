@@ -1,0 +1,13 @@
+.button {
+  padding: 7px 14px;
+  background-color: #0a8fdc;
+  color: #fff;
+  text-align: center;
+  font-family: "Poppins", Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 24px;
+  font-weight: 600;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+}
