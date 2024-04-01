@@ -1,12 +1,20 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import styles from "./header.module.css";
 import Button from "../button/button";
+import data from "../../data";
 
 const Header: FC = () => {
+
+  const [requestData, setRequestData] = useState(data);
+
+  const pageSize = 12;
+
+  const totalPage = Math.ceil(requestData.length / pageSize);
+
   return (
     <header className={styles.header}>
       <Button text="Новый запрос" />
-      <p className={styles.pagination}>1 из 1</p>
+      <p className={styles.pagination}>1 из {totalPage}</p>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="60"
