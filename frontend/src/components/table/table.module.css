@@ -28,7 +28,7 @@
 td {
   padding: 0 20px;
 }
-.td {
+.td, .status {
   padding: 4px 12px;
 }
 .header {
@@ -68,7 +68,29 @@ td {
   background-color: #FF9D8F;
   color: #FD1E00;
 }
-.newFunctional {
+.colorGreen {
   background-color: #59C6A5;
   color: #396658;
+}
+.colorYellow {
+  background-color: #FFD700;
+  color: #FF7F50;
+}
+.colorBlue {
+  background-color: #B3DAFA;
+  color: #0079C2;
+}
+.filterItem {
+  display: flex;
+  align-items: baseline;
+  padding: 0 10px;
+  column-gap: 5px;
+}
+.normal {
+  background-color: #FFF5EE;
+}
+.cross {
+  width: 10px;
+  height: 10px;
+  cursor: pointer;
 }

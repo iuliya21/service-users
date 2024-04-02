@@ -131,7 +131,11 @@ const Table: FC = () => {
                   className={
                     el.type === "Ошибка"
                       ? `${styles.error} ${styles.td}`
-                      : el.type === "Новая функциональность" ? `${styles.newFunctional} ${styles.td}` : `${styles.td}`
+                      : el.type === "Новая функциональность"
+                      ? `${styles.colorGreen} ${styles.td}`
+                      : el.type === "Улучшение"
+                      ? `${styles.colorYellow} ${styles.td}`
+                      : `${styles.td} ${styles.colorBlue}`
                   }
                 >
                   {el.type}
@@ -150,11 +154,18 @@ const Table: FC = () => {
               >
                 {el.date}
               </td>
-              <td
-                className={styles.status}
-                onClick={() => setStatusFilter(el.status)}
-              >
-                {el.status}
+              <td onClick={() => setStatusFilter(el.status)}>
+                <span
+                  className={
+                    el.status === "В работе"
+                      ? `${styles.status} ${styles.colorBlue}`
+                      : el.status === "Выполнено"
+                      ? `${styles.status} ${styles.colorGreen}`
+                      : `${styles.status} ${styles.colorYellow}`
+                  }
+                >
+                  {el.status}
+                </span>
               </td>
             </tr>
           ))}
@@ -177,12 +188,72 @@ const Table: FC = () => {
           )}
         </tbody>
       </table>
-      <div className={styles.footer} onClick={filterReset}>
-        <Button text="Сбросить фильтрацию" />
-        {authorFilter && <p className={styles.tag}>{authorFilter}</p>}
-        {dateFilter && <p className={styles.tag}>{dateFilter}</p>}
-        {statusFilter && <p className={styles.tag}>{statusFilter}</p>}
-        {typeFilter && <p className={styles.tag}>{typeFilter}</p>}
+      <div className={styles.footer}>
+        <div onClick={filterReset}>
+          <Button text="Сбросить фильтрацию" />
+        </div>
+        {authorFilter && (
+          <div className={`${styles.filterItem} ${styles.normal}`}>
+            <p className={styles.tag}>{authorFilter}</p>
+            <img
+              src="/images/cross.svg"
+              alt="Сбросить фильтр"
+              className={styles.cross}
+              onClick={() => setAuthorFilter("")}
+            />
+          </div>
+        )}
+        {dateFilter && (
+          <div className={`${styles.filterItem} ${styles.normal}`}>
+            <p className={styles.tag}>{dateFilter}</p>
+            <img
+              src="/images/cross.svg"
+              alt="Сбросить фильтр"
+              className={styles.cross}
+              onClick={() => setDateFilter("")}
+            />
+          </div>
+        )}
+        {statusFilter && (
+          <div
+            className={
+              statusFilter === "В работе"
+                ? `${styles.filterItem} ${styles.colorBlue}`
+                : statusFilter === "Выполнено"
+                ? `${styles.filterItem} ${styles.colorGreen}`
+                : `${styles.filterItem} ${styles.colorYellow}`
+            }
+          >
+            <p className={styles.tag}>{statusFilter}</p>
+            <img
+              src="/images/cross.svg"
+              alt="Сбросить фильтр"
+              className={styles.cross}
+              onClick={() => setStatusFilter("")}
+            />
+          </div>
+        )}
+        {typeFilter && (
+          <div
+            className={
+              typeFilter === "Новая функциональность"
+                ? `${styles.filterItem} ${styles.colorGreen}`
+                : typeFilter === "Ошибка"
+                ? `${styles.filterItem} ${styles.error}`
+                : typeFilter === "Улучшение"
+                ? `${styles.filterItem} ${styles.colorYellow}`
+                : `${styles.filterItem} ${styles.colorBlue}`
+            }
+          >
+            <p className={styles.tag}>{typeFilter}</p>
+            <img
+              src="/images/cross.svg"
+              alt="Сбросить фильтр"
+              className={styles.cross}
+              onClick={() => setTypeFilter("")}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
