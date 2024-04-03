@@ -1,8 +1,17 @@
 import styles from "./app.module.css";
-import Header from "../header/header";
 import Table from "../table/table";
+import { useMessagesStore } from "../../services/store";
+import { useEffect, useState } from "react";
 
 function App() {
+
+  const { messages, fetchMessages } = useMessagesStore();
+
+  console.log(messages);
+
+  useEffect(() => {
+    fetchMessages();
+  }, [])
 
   return (
     <div className={styles.app}>

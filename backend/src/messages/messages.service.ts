@@ -1,19 +1,21 @@
 import { Injectable } from '@nestjs/common';
 // import { CreateMessageDto } from './dto/create-message.dto';
 // import { UpdateMessageDto } from './dto/update-message.dto';
-import * as fs from 'fs/promises';
+import { promises as fs } from 'fs';
+import { join } from 'path';
 
 @Injectable()
 export class MessagesService {
-  async readFile(filePath: string): Promise<any> {
+  async getData() {
     try {
-      const data = await fs.readFile(filePath, 'utf-8');
+      const filePath = join(__dirname, '../../src/utils/', 'messages.json');
+      const data = await fs.readFile(filePath, { encoding: 'utf-8' });
+      console.log(JSON.parse(data));
       return JSON.parse(data);
     } catch (error) {
       throw new Error(`Error reading JSON file: ${error.message}`);
     }
   }
-
   // create(createMessageDto: CreateMessageDto) {
   //   return 'This action adds a new message';
   // }
