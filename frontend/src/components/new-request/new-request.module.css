@@ -1,0 +1,10 @@
+.form {
+  display: flex;
+  flex-direction: column;
+
+}
+.buttons {
+  display: flex;
+  justify-content: center;
+  column-gap: 38px;
+}

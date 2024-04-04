@@ -10,7 +10,6 @@ export class MessagesService {
     try {
       const filePath = join(__dirname, '../../src/utils/', 'messages.json');
       const data = await fs.readFile(filePath, { encoding: 'utf-8' });
-      console.log(JSON.parse(data));
       return JSON.parse(data);
     } catch (error) {
       throw new Error(`Error reading JSON file: ${error.message}`);

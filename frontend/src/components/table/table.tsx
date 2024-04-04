@@ -1,19 +1,69 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useCallback, useEffect, useState } from "react";
 import styles from "./table.module.css";
-import data from "../../data";
 import Button from "../button/button";
+import { IMessage } from "../../types/types";
+import { useMessagesStore } from "../../services/store";
+import { useModal } from "../../hooks/useModal";
+import Modal from "../modal/modal";
+import MessageInfo from "../message-info/message-info";
+import RequestNew from "../new-request/new-request";
 
 const Table: FC = () => {
-  const [requestData, setRequestData] = useState(data);
+  const { messages } = useMessagesStore();
+
+  const [requestData, setRequestData] = useState<IMessage[]>(messages);
   const [currentPage, setCurrentPage] = useState(1);
   const [authorFilter, setAuthorFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
+  const [currentMessage, setCurrentMessage] = useState<IMessage | null>(null);
+
+  const {
+    isModalOpen: isModalOpenInfo,
+    openModal: openModalInfo,
+    closeModal: closeModalInfo,
+  } = useModal();
+  const {
+    isModalOpen: isModalOpenRequest,
+    openModal: openModalRequest,
+    closeModal: closeModalRequest,
+  } = useModal();
+
+  useEffect(() => {
+    if (messages && messages.length > 0) {
+      setRequestData(messages);
+    }
+  }, [messages]);
+
+  const filterData = useCallback(() => {
+    let filteredData = messages.slice();
+
+    if (authorFilter) {
+      filteredData = filteredData.filter((item) => item.user === authorFilter);
+    }
+
+    if (dateFilter) {
+      filteredData = filteredData.filter((item) => item.date === dateFilter);
+    }
+
+    if (statusFilter) {
+      filteredData = filteredData.filter(
+        (item) => item.status === statusFilter
+      );
+    }
+
+    if (typeFilter) {
+      filteredData = filteredData.filter((item) => item.type === typeFilter);
+    }
+
+    setRequestData(filteredData);
+    setCurrentPage(1);
+  }, [authorFilter, dateFilter, messages, statusFilter, typeFilter]);
 
   useEffect(() => {
     filterData();
-  }, [authorFilter, dateFilter, statusFilter, typeFilter]);
+  }, [filterData]);
 
   const pageSize = 12;
 
@@ -38,33 +88,9 @@ const Table: FC = () => {
       return nextPageValue <= totalPage ? nextPageValue : prevPage;
     });
   };
-  const filterData = () => {
-    let filteredData = data;
-
-    if (authorFilter) {
-      filteredData = filteredData.filter((item) => item.user === authorFilter);
-    }
-
-    if (dateFilter) {
-      filteredData = filteredData.filter((item) => item.date === dateFilter);
-    }
-
-    if (statusFilter) {
-      filteredData = filteredData.filter(
-        (item) => item.status === statusFilter
-      );
-    }
-
-    if (typeFilter) {
-      filteredData = filteredData.filter((item) => item.type === typeFilter);
-    }
-
-    setRequestData(filteredData);
-    setCurrentPage(1);
-  };
 
   const filterReset = () => {
-    setRequestData(data);
+    setRequestData(messages);
     setCurrentPage(1);
     setAuthorFilter("");
     setDateFilter("");
@@ -72,10 +98,21 @@ const Table: FC = () => {
     setTypeFilter("");
   };
 
+  const hideModal = () => {
+    closeModalInfo();
+  };
+
+  const handleClickLink = (el: IMessage) => {
+    openModalInfo();
+    setCurrentMessage(el);
+  };
+
   return (
-    <div>
-      <header className={styles.header}>
-        <Button text="Новый запрос" />
+    <div className={styles.app}>
+      <div className={styles.header}>
+        <div onClick={openModalRequest}>
+          <Button text="Новый запрос" />
+        </div>
         <p className={styles.pagination}>
           {currentPage} из {totalPage}
         </p>
@@ -103,7 +140,7 @@ const Table: FC = () => {
             fill="#6B7280"
           />
         </svg>
-      </header>
+      </div>
       <table className={styles.table}>
         <thead className={styles.tableHead}>
           <tr className={styles.tableString}>
@@ -116,12 +153,15 @@ const Table: FC = () => {
           </tr>
         </thead>
         <tbody className={styles.tableBody}>
-          {getCurrentPageData().map((el: any, index: number) => (
+          {getCurrentPageData().map((el: IMessage, index: number) => (
             <tr key={index} className={styles.tableString}>
               <td>
-                <a className={styles.tableNumber} href="#">
+                <button
+                  className={styles.tableNumber}
+                  onClick={() => handleClickLink(el)}
+                >
                   {el.id}
-                </a>
+                </button>
               </td>
               <td
                 className={styles.type}
@@ -141,7 +181,14 @@ const Table: FC = () => {
                   {el.type}
                 </span>
               </td>
-              <td>{el.description}</td>
+              <td>
+                <p
+                  className={styles.subtitle}
+                  onClick={() => handleClickLink(el)}
+                >
+                  {el.description}
+                </p>
+              </td>
               <td
                 className={styles.user}
                 onClick={() => setAuthorFilter(el.user)}
@@ -176,7 +223,7 @@ const Table: FC = () => {
                 className={styles.tableString}
               >
                 <td>
-                  <a className={styles.tableNumber} href="#"></a>
+                  <button className={styles.tableNumber}></button>
                 </td>
                 <td></td>
                 <td></td>
@@ -255,6 +302,21 @@ const Table: FC = () => {
           </div>
         )}
       </div>
+
+      {isModalOpenInfo && (
+        <Modal onClosePopup={hideModal}>
+          <MessageInfo
+            currentMessage={currentMessage}
+            closeModal={closeModalInfo}
+          />
+        </Modal>
+      )}
+
+      {isModalOpenRequest && (
+        <Modal onClosePopup={closeModalRequest}>
+          <RequestNew />
+        </Modal>
+      )}
     </div>
   );
 };
