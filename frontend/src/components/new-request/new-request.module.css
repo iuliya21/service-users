@@ -1,10 +1,140 @@
+:root {
+  --font-family-default: "Roboto";
+}
+.legend,
+.inputText,
+.select,
+.buttonDpordown,
+.dropList,
+.descriptionTitle,
+.textarea {
+  font-family: var(--font-family-default);
+}
+
 .form {
   display: flex;
   flex-direction: column;
-
+  min-width: 800px;
 }
 .buttons {
   display: flex;
   justify-content: center;
   column-gap: 38px;
+}
+.legend {
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+.fieldset {
+  border: 1px #e0e0e0 solid;
+  padding: 6px 20px 12px 12px;
+}
+.inputText {
+  color: #000;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 18px;
+  border: none;
+  width: 100%;
+}
+.select {
+  width: 100%;
+  color: #111827;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  border: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  position: relative;
+}
+.inputText:focus,
+.select:focus {
+  outline: none;
+}
+.customSelect {
+  align-items: center;
+  position: relative;
+}
+
+.buttonDpordown {
+  position: relative;
+  display: block;
+  width: 100%;
+  background-color: #fff;
+  border: none;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.dropList {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+  list-style-type: none;
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  width: 104%;
+  margin-left: -12px;
+  padding: 0;
+  z-index: 10;
+}
+.dropListItem {
+  margin: 0;
+  padding: 8px 0 0 12px;
+}
+.dropListItem:first-child {
+  padding-top: 12px;
+}
+.dropListItem:last-child {
+  padding-bottom: 5px;
+}
+.dropListItem:hover {
+  background-color: #b3dafa;
+  cursor: pointer;
+}
+.dropdownHidden {
+  display: none;
+}
+.dropdownShow {
+  display: block;
+}
+.fieldsetUser {
+  margin-bottom: 27px;
+}
+.descriptionTitle {
+  margin: 15px 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 18px;
+}
+.textarea {
+  padding: 6px 16px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  border: 1px solid #e0e0e0;
+  height: 142px;
+}
+.textarea:focus {
+  outline: none;
+}
+.imageTitle {
+  margin-bottom: 10px;
+}
+.inputAddImage {
+  display: none;
+}
+.addImage {
+  margin-bottom: 87px;
 }
