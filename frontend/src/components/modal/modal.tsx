@@ -18,7 +18,7 @@ const Modal: FC<IModal> = ({ children, onClosePopup }) => {
     return () => {
       document.removeEventListener("keydown", closeByEsc);
     };
-  }, []);
+  }, [onClosePopup]);
 
   if (!modalRoot) {
     return null;

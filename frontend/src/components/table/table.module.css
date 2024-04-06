@@ -61,16 +61,13 @@ td {
   font-weight: 400;
   line-height: 15px;
 }
-.back {
-  cursor: pointer;
-}
-.next {
-  cursor: pointer;
-}
 .type,
 .user,
 .date,
-.status {
+.status,
+.tableSort,
+.back,
+.next {
   cursor: pointer;
 }
 .footer {
@@ -115,4 +112,6 @@ td {
 }
 .subtitle {
   cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

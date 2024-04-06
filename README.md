@@ -1,0 +1,1 @@
+[Документация Swagger](/api/docs)

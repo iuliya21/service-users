@@ -109,8 +109,8 @@
 .dropdownShow {
   display: block;
 }
-.fieldsetUser {
-  margin-bottom: 27px;
+.requestType {
+  margin-top: 27px;
 }
 .descriptionTitle {
   margin: 15px 0;
@@ -137,4 +137,42 @@
 }
 .addImage {
   margin-bottom: 87px;
+}
+.buttonAddImage {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  width: 20px;
+  height: 20px;
+  background-repeat: no-repeat;
+}
+.fileName {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 22px;
+}
+.cross {
+  cursor: pointer;
+  width: 10px;
+  height: 10px;
+  border: none;
+  background: transparent;
+  background-repeat: no-repeat;
+}
+.cancelFile {
+  display: flex;
+  align-items: center;
+  padding-top: 10px;
+  column-gap: 8px;
+}
+.errorValidate {
+  margin: 0 12px;
+  color: red;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+}
+.fieldsetError, .textareaErrorValidate {
+  border: 2px red solid;
 }

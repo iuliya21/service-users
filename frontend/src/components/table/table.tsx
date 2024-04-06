@@ -8,7 +8,11 @@ import Modal from "../modal/modal";
 import MessageInfo from "../message-info/message-info";
 import RequestNew from "../new-request/new-request";
 
-const Table: FC = () => {
+interface ITable {
+  handleReloadData: () => void;
+}
+
+const Table: FC<ITable> = ({ handleReloadData }) => {
   const { messages } = useMessagesStore();
 
   const [requestData, setRequestData] = useState<IMessage[]>(messages);
@@ -18,12 +22,15 @@ const Table: FC = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [currentMessage, setCurrentMessage] = useState<IMessage | null>(null);
+  const [sortBy, setSortBy] = useState<keyof IMessage | null>(null);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const {
     isModalOpen: isModalOpenInfo,
     openModal: openModalInfo,
     closeModal: closeModalInfo,
   } = useModal();
+
   const {
     isModalOpen: isModalOpenRequest,
     openModal: openModalRequest,
@@ -34,9 +41,11 @@ const Table: FC = () => {
     if (messages && messages.length > 0) {
       setRequestData(messages);
     }
+    setRequestData(messages);
   }, [messages]);
 
   const filterData = useCallback(() => {
+
     let filteredData = messages.slice();
 
     if (authorFilter) {
@@ -57,9 +66,21 @@ const Table: FC = () => {
       filteredData = filteredData.filter((item) => item.type === typeFilter);
     }
 
+    if (sortBy) {
+      filteredData.sort((a, b) => {
+        if (sortBy === "id") {
+          return sortOrder === "asc" ? a.id - b.id : b.id - a.id;
+        } else {
+          return sortOrder === "asc"
+            ? a[sortBy].localeCompare(b[sortBy])
+            : b[sortBy].localeCompare(a[sortBy]);
+        }
+      });
+    }
+
     setRequestData(filteredData);
     setCurrentPage(1);
-  }, [authorFilter, dateFilter, messages, statusFilter, typeFilter]);
+  }, [authorFilter, dateFilter, messages, sortOrder, sortBy, statusFilter, typeFilter]);
 
   useEffect(() => {
     filterData();
@@ -98,21 +119,22 @@ const Table: FC = () => {
     setTypeFilter("");
   };
 
-  const hideModal = () => {
-    closeModalInfo();
-  };
-
   const handleClickLink = (el: IMessage) => {
     openModalInfo();
     setCurrentMessage(el);
   };
 
+  const handleSort = (column: string) => {
+    if (Object.keys(messages[0]).includes(column)) {
+      setSortBy(column as keyof IMessage);
+      setSortOrder(sortBy === column && sortOrder === "asc" ? "desc" : "asc");
+    }
+  };
+
   return (
     <div className={styles.app}>
       <div className={styles.header}>
-        <div onClick={openModalRequest}>
-          <Button text="Новый запрос" />
-        </div>
+        <Button text="Новый запрос" onClick={openModalRequest} />
         <p className={styles.pagination}>
           {currentPage} из {totalPage}
         </p>
@@ -144,12 +166,12 @@ const Table: FC = () => {
       <table className={styles.table}>
         <thead className={styles.tableHead}>
           <tr className={styles.tableString}>
-            <th>Номер запроса</th>
-            <th>Тип запроса</th>
+            <th onClick={() => handleSort("id")} className={styles.tableSort}>Номер запроса</th>
+            <th onClick={() => handleSort("type")} className={styles.tableSort}>Тип запроса</th>
             <th>Описание</th>
-            <th>Пользователь</th>
-            <th>Дата</th>
-            <th>Статус</th>
+            <th onClick={() => handleSort("user")} className={styles.tableSort}>Пользователь</th>
+            <th onClick={() => handleSort("date")} className={styles.tableSort}>Дата</th>
+            <th onClick={() => handleSort("status")} className={styles.tableSort}>Статус</th>
           </tr>
         </thead>
         <tbody className={styles.tableBody}>
@@ -236,9 +258,8 @@ const Table: FC = () => {
         </tbody>
       </table>
       <div className={styles.footer}>
-        <div onClick={filterReset}>
-          <Button text="Сбросить фильтрацию" />
-        </div>
+        <Button text="Сбросить фильтрацию" onClick={filterReset} />
+
         {authorFilter && (
           <div className={`${styles.filterItem} ${styles.normal}`}>
             <p className={styles.tag}>{authorFilter}</p>
@@ -304,7 +325,7 @@ const Table: FC = () => {
       </div>
 
       {isModalOpenInfo && (
-        <Modal onClosePopup={hideModal}>
+        <Modal onClosePopup={closeModalInfo}>
           <MessageInfo
             currentMessage={currentMessage}
             closeModal={closeModalInfo}
@@ -314,7 +335,10 @@ const Table: FC = () => {
 
       {isModalOpenRequest && (
         <Modal onClosePopup={closeModalRequest}>
-          <RequestNew />
+          <RequestNew
+            closeModal={closeModalRequest}
+            handleReloadData={handleReloadData}
+          />
         </Modal>
       )}
     </div>
