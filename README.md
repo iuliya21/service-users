@@ -4,6 +4,7 @@
 
 - <code>git clone</code> клонировать репозиторий
 - <code>docker-compose up</code> запустить в корне проекта docker-контейнер
+- <code>http://localhost:3001/api/docs</code> посмотреть swagger-документацию
 
 <h3><i>Функциональность</i></h3>
 
