@@ -1,1 +1,1 @@
-[Документация Swagger](/api/docs)
+test
