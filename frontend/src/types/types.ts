@@ -7,6 +7,7 @@ export interface IMessage {
   user: string;
   date: string;
   status: string;
+  image: string
 }
 
 export interface IModal {

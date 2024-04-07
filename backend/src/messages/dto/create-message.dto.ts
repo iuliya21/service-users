@@ -32,4 +32,10 @@ export class CreateMessageDto {
   })
   @IsIn(['В очереди', 'В работе', 'Выполнено'])
   status: string;
+
+  @ApiProperty({
+    description: 'изображение, прикрепленное к обращению',
+    required: false,
+  })
+  image?: string | null;
 }

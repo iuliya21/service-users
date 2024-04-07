@@ -16,6 +16,11 @@
   flex-direction: column;
   min-width: 800px;
 }
+@media screen and (max-width: 920px) {
+  .form {
+    min-width: 80vw;
+  }
+}
 .buttons {
   display: flex;
   justify-content: center;

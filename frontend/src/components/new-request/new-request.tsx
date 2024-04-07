@@ -13,11 +13,16 @@ interface IForm {
   user: string;
   type: string;
   description: string;
+  image?: string;
 }
+
+const MAX_FILE_SIZE = 300 * 1024; // 300 кб
 
 const RequestNew: FC<IRequest> = ({ closeModal, handleReloadData }) => {
   const [droplistShow, setDroplistShow] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
+  const [fileSizeError, setFileSizeError] = useState(false);
 
   const filePicker = useRef<HTMLInputElement>(null);
 
@@ -44,9 +49,11 @@ const RequestNew: FC<IRequest> = ({ closeModal, handleReloadData }) => {
       const month = String(today.getMonth() + 1).padStart(2, "0");
       const year = today.getFullYear();
       const formattedDate = `${day}.${month}.${year}`;
+      
       await axios.post("http://localhost:3001/messages", {
         ...data,
         date: formattedDate,
+        image: imageBase64,
       });
       handleReloadData();
     } catch (error) {
@@ -64,15 +71,11 @@ const RequestNew: FC<IRequest> = ({ closeModal, handleReloadData }) => {
   };
 
   const handleClickAddImage = () => {
-    if (filePicker.current) {
-      filePicker.current.click();
-    }
-  };
-
-  const handleChangeFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setFileName(file.name);
+    const inputElement = document.getElementById(
+      "fileInput"
+    ) as HTMLInputElement | null;
+    if (inputElement) {
+      inputElement.click();
     }
   };
 
@@ -81,6 +84,18 @@ const RequestNew: FC<IRequest> = ({ closeModal, handleReloadData }) => {
     if (filePicker.current) {
       filePicker.current.value = "";
     }
+  };
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        resolve(base64String);
+      };
+      reader.onerror = (error) => reject(error);
+    });
   };
 
   return (
@@ -207,9 +222,29 @@ const RequestNew: FC<IRequest> = ({ closeModal, handleReloadData }) => {
           type="file"
           className={styles.inputAddImage}
           id="fileInput"
-          ref={filePicker}
           accept="image/jpeg, image/png"
-          onChange={handleChangeFile}
+          {...register("image")}
+          onChange={async (event) => {
+            const file = event.target.files?.[0];
+            if (file) {
+              if (file.size > MAX_FILE_SIZE) {
+                setFileSizeError(true);
+                setFileName(null);
+                setImageBase64(null);
+                return;
+              }
+              setFileName(file.name);
+              try {
+                const base64String = await fileToBase64(file);
+                setImageBase64(base64String);
+              } catch (error) {
+                console.error("Error converting file to base64:", error);
+              }
+            } else {
+              setFileName(null);
+              setImageBase64(null);
+            }
+          }}
         />
         <button
           id="uploadButton"
@@ -225,9 +260,11 @@ const RequestNew: FC<IRequest> = ({ closeModal, handleReloadData }) => {
               className={styles.cross}
               style={{ backgroundImage: `url(/images/cross.svg)` }}
               onClick={resetFile}
+              type="button"
             ></button>
           </div>
         )}
+        {fileSizeError && <p className={styles.errorValidate} style={{marginTop: 10}}>Максимальный размер файла 300 Кб</p>}
       </div>
 
       <div className={styles.buttons}>

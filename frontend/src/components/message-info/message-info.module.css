@@ -13,6 +13,11 @@
   min-width: 500px;
   box-sizing: border-box;
 }
+@media screen and (max-width: 600px) {
+  .messageInfo {
+    min-width: 60vw;
+  }
+}
 .group {
   border: 1px solid #E0E0E0;
   padding: 10px;
@@ -24,4 +29,8 @@
   font-size: 16px;
   font-weight: 600;
   line-height: 18px;
+}
+.buttons {
+  display: flex;
+  justify-content: space-between;
 }

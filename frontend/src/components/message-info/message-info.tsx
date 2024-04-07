@@ -2,6 +2,9 @@ import { FC } from "react";
 import { IMessage } from "../../types/types";
 import styles from "./message-info.module.css";
 import Button from "../button/button";
+import { useModal } from "../../hooks/useModal";
+import Modal from "../modal/modal";
+import MessagePhoto from "../photo-message/photo-message";
 
 interface IMessageInfoProps {
   currentMessage: IMessage | null;
@@ -9,6 +12,15 @@ interface IMessageInfoProps {
 }
 
 const MessageInfo: FC<IMessageInfoProps> = ({ currentMessage, closeModal }) => {
+  
+  const haveImage = currentMessage?.image;
+
+  const {
+    isModalOpen: isModalOpenPhoto,
+    openModal: openModalPhoto,
+    closeModal: closeModalPhoto,
+  } = useModal();
+
   return (
     <div>
       <div className={styles.messageInfo}>
@@ -37,9 +49,21 @@ const MessageInfo: FC<IMessageInfoProps> = ({ currentMessage, closeModal }) => {
           <p className={styles.text}>{currentMessage?.status}</p>
         </div>
       </div>
-      <div onClick={() => closeModal()}>
-        <Button text="Закрыть" />
+
+      <div className={styles.buttons}>
+        <Button
+          text="Показать изображение"
+          disabled={haveImage ? false : true}
+          onClick={openModalPhoto}
+        />
+        <Button text="Закрыть" onClick={() => closeModal()} />
       </div>
+
+      {isModalOpenPhoto && (
+        <Modal onClosePopup={closeModalPhoto}>
+          <MessagePhoto image={haveImage} closeModalPhoto={closeModalPhoto}/>
+        </Modal>
+      )}
     </div>
   );
 };

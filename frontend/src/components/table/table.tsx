@@ -13,6 +13,7 @@ interface ITable {
 }
 
 const Table: FC<ITable> = ({ handleReloadData }) => {
+  
   const { messages } = useMessagesStore();
 
   const [requestData, setRequestData] = useState<IMessage[]>(messages);
